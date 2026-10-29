@@ -515,16 +515,25 @@
             if (!isRecording) {
                 // Iniciar Gravação
                 recordedChunks = [];
-                let options = { mimeType: 'video/webm;codecs=vp9,opus' };
-                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                    options = { mimeType: 'video/webm;codecs=vp8,opus' };
-                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                        options = { mimeType: 'video/mp4' };
+                let options = {};
+                const preferredTypes = [
+                    'video/mp4;codecs=h264,aac',
+                    'video/mp4;codecs=h264',
+                    'video/mp4',
+                    'video/webm;codecs=vp9,opus',
+                    'video/webm;codecs=vp8,opus',
+                    'video/webm'
+                ];
+                
+                for (const type of preferredTypes) {
+                    if (MediaRecorder.isTypeSupported(type)) {
+                        options = { mimeType: type };
+                        break;
                     }
                 }
 
                 try {
-                    mediaRecorder = new MediaRecorder(mediaStream, options);
+                    mediaRecorder = new MediaRecorder(mediaStream, Object.keys(options).length > 0 ? options : undefined);
                 } catch (e) {
                     mediaRecorder = new MediaRecorder(mediaStream);
                 }
@@ -534,12 +543,16 @@
                 };
 
                 mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/mp4' });
+                    const actualMimeType = mediaRecorder.mimeType || (options && options.mimeType) || 'video/mp4';
+                    const blob = new Blob(recordedChunks, { type: actualMimeType });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = url;
-                    a.download = `TP_RISE_Gravacao_${Date.now()}.${mediaRecorder.mimeType.includes('mp4') ? 'mp4' : 'webm'}`;
+                    
+                    const ext = actualMimeType.toLowerCase().includes('mp4') ? 'mp4' : 'webm';
+                    a.download = `TP_RISE_Gravacao_${Date.now()}.${ext}`;
+                    
                     document.body.appendChild(a);
                     a.click();
                     setTimeout(() => {
