@@ -138,6 +138,9 @@
             </div>
 
             <div class="flex items-center space-x-2">
+                <button onclick="openDonationModal()" class="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs text-white font-bold transition active:scale-95 flex items-center space-x-1.5 shadow-sm">
+                    <span class="text-red-500 text-xs">❤️</span> <span>Apoiar</span>
+                </button>
                 <button onclick="loadSampleScript()" class="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs text-zinc-300 transition active:scale-95">
                     Exemplo
                 </button>
@@ -217,6 +220,9 @@
                 </div>
 
                 <div class="flex items-center space-x-2">
+                    <button onclick="openDonationModal()" class="px-4 h-12 rounded-2xl bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/80 flex items-center justify-center text-white hover:bg-zinc-800 transition active:scale-95 shadow-xl text-xs font-bold space-x-1.5" title="Apoiar o Projeto">
+                        <span class="text-red-500 text-sm">❤️</span> <span class="hidden md:inline">Apoiar</span>
+                    </button>
                     <button onclick="toggleFullscreen()" class="w-12 h-12 rounded-2xl bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/80 flex items-center justify-center text-white hover:bg-zinc-800 transition active:scale-95 shadow-xl" title="Tela Cheia">
                         <i class="fa-solid fa-expand text-lg"></i>
                     </button>
@@ -329,6 +335,10 @@
         });
 
         // --- Modal & PIX ---
+        function openDonationModal() {
+            document.getElementById('donation-modal').classList.remove('hidden');
+        }
+
         function closeDonationModal() {
             localStorage.setItem('tp_rise_donation_dismissed', 'true');
             document.getElementById('donation-modal').classList.add('hidden');
